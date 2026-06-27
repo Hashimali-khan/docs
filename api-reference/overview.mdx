@@ -1,0 +1,78 @@
+---
+title: "UpForge REST API Reference Overview"
+sidebarTitle: "Overview"
+description: "The UpForge REST API lets you read courses, track lesson progress, fetch achievements, and query leaderboard data programmatically using session cookies."
+---
+
+UpForge exposes a JSON REST API that powers the web app. You can use these endpoints to build integrations, automate learning workflows, or pull your progress data into external tools.
+
+## Base URL
+
+All endpoints are relative to your UpForge deployment:
+
+```
+https://your-upforge-instance.com
+```
+
+Replace `your-upforge-instance.com` with the actual domain of your UpForge deployment.
+
+## Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/courses` | List all courses with enrollment status |
+| `GET` | `/api/courses/:courseId` | Course details with lesson list and your progress |
+| `POST` | `/api/courses/:courseId/enroll` | Enroll in a course |
+| `DELETE` | `/api/courses/:courseId/enroll` | Unenroll from a course |
+| `POST` | `/api/progress` | Mark a lesson complete and earn XP |
+| `GET` | `/api/achievements` | List all achievements with your earned status |
+| `GET` | `/api/leaderboard` | Ranked leaderboard with your current rank |
+| `GET` | `/api/user/stats` | Full dashboard stats for your account |
+| `POST` | `/api/user/sync` | Sync your profile from your auth account |
+
+## Request & Response Format
+
+All endpoints accept and return **JSON**. When sending a request body (e.g. `POST` requests), include the `Content-Type` header:
+
+```http
+Content-Type: application/json
+```
+
+A typical response from `GET /api/courses` looks like this:
+
+```json
+[
+  {
+    "id": "course_abc123",
+    "title": "Intro to TypeScript",
+    "description": "Learn TypeScript from the ground up.",
+    "thumbnail": "https://...",
+    "duration": 120,
+    "points": 500,
+    "totalLessons": 12,
+    "enrolled": true,
+    "progress": 42
+  }
+]
+```
+
+## Error Responses
+
+The API uses standard HTTP status codes to signal the outcome of every request.
+
+| Status Code | Meaning |
+|-------------|---------|
+| `401 Unauthorized` | You are not signed in or your session has expired |
+| `400 Bad Request` | A required parameter is missing or invalid |
+| `404 Not Found` | The requested resource does not exist |
+| `500 Internal Server Error` | Something went wrong on the server |
+
+Error responses return a plain-text message body describing the problem, for example:
+
+```
+Unauthorized
+```
+
+<Note>
+  All endpoints require you to be signed in. See the [Authentication](/api-reference/authentication) page for details on how to include your session credentials with each request.
+</Note>

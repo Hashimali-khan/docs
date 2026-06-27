@@ -1,0 +1,110 @@
+---
+title: "Leaderboard API: Ranked Users by Total XP"
+sidebarTitle: "Leaderboard"
+description: "GET /api/leaderboard returns the top 100 users ranked by XP, plus your personal rank, XP, level, and streak regardless of position."
+---
+
+The Leaderboard API returns a global ranking of UpForge's most active learners. Even if you're outside the top 100, your personal stats and rank are always included in the response so you can see exactly where you stand.
+
+---
+
+## GET /api/leaderboard
+
+<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
+
+Returns the global leaderboard (up to 100 users ordered by total XP, highest first) plus a snapshot of your own stats and rank.
+
+### Response fields
+
+<ResponseField name="entries" type="LeaderboardEntry[]" required>
+  Ordered array of the top users (maximum 100). Sorted descending by `points`.
+
+  <Expandable title="LeaderboardEntry object fields">
+    <ResponseField name="id" type="string">UpForge internal user UUID.</ResponseField>
+    <ResponseField name="name" type="string | null">The user's display name.</ResponseField>
+    <ResponseField name="username" type="string | null">The user's unique username.</ResponseField>
+    <ResponseField name="avatarUrl" type="string | null">URL of the user's profile picture, or `null` if none is set.</ResponseField>
+    <ResponseField name="points" type="number">Total XP the user has accumulated.</ResponseField>
+    <ResponseField name="level" type="number">The user's current level, derived from their total XP.</ResponseField>
+    <ResponseField name="currentStreak" type="number">Number of consecutive days the user has completed at least one lesson.</ResponseField>
+    <ResponseField name="rank" type="number">1-based position in this response (rank 1 = highest XP).</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="userRank" type="number | null" required>
+  Your 1-based rank within the leaderboard response. `null` if your account could not be found or if you have no XP yet. If you're outside the top 100, this reflects your position relative to all ranked users.
+</ResponseField>
+
+<ResponseField name="userPoints" type="number" required>
+  Your current total XP. Returns `0` if your account is not found.
+</ResponseField>
+
+<ResponseField name="userLevel" type="number" required>
+  Your current level. Returns `1` if your account is not found.
+</ResponseField>
+
+<ResponseField name="userStreak" type="number" required>
+  Your current daily streak. Returns `0` if your account is not found.
+</ResponseField>
+
+<ResponseField name="totalUsers" type="number" required>
+  Number of users actually included in the `entries` array (≤ 100).
+</ResponseField>
+
+### Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `401`  | You are not authenticated. |
+
+<Note>
+  If a server error occurs, the endpoint returns a safe fallback payload with empty `entries` and zeroed-out user stats rather than a `5xx` error code. Always check whether `entries` is non-empty before rendering a leaderboard UI.
+</Note>
+
+### Example response
+
+```json
+{
+  "entries": [
+    {
+      "id": "user-uuid-001",
+      "name": "Jane Doe",
+      "username": "janedoe",
+      "avatarUrl": "https://img.clerk.com/abc123",
+      "points": 4200,
+      "level": 7,
+      "currentStreak": 14,
+      "rank": 1
+    },
+    {
+      "id": "user-uuid-002",
+      "name": "Alex Smith",
+      "username": "alexsmith",
+      "avatarUrl": null,
+      "points": 3750,
+      "level": 6,
+      "currentStreak": 5,
+      "rank": 2
+    },
+    {
+      "id": "user-uuid-003",
+      "name": "Sam Lee",
+      "username": "samlee",
+      "avatarUrl": "https://img.clerk.com/def456",
+      "points": 1850,
+      "level": 5,
+      "currentStreak": 3,
+      "rank": 3
+    }
+  ],
+  "userRank": 3,
+  "userPoints": 1850,
+  "userLevel": 5,
+  "userStreak": 3,
+  "totalUsers": 87
+}
+```
+
+<Tip>
+  Ranks are computed on the fly from the current snapshot of user data. Because UpForge doesn't cache this query, the leaderboard always reflects the latest XP totals — but it may shift between requests as other users complete lessons.
+</Tip>

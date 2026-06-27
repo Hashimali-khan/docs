@@ -1,0 +1,64 @@
+---
+title: "Create Your UpForge Account and Sign In"
+sidebarTitle: "Sign Up"
+description: "Create a free UpForge account in under a minute. Learn how to sign up, sign in, and access your personalized learning dashboard."
+---
+
+Getting started with UpForge takes less than a minute. Once you create your free account, UpForge automatically sets up your learner profile — your XP counter, streak tracker, and personalized dashboard are all ready before you finish your first cup of coffee.
+
+<Note>
+  UpForge is completely free to join. No credit card is required, and no trial period expires.
+</Note>
+
+## Create your account
+
+<Steps>
+  <Step title="Go to the UpForge homepage and click &quot;Start Learning Free&quot;">
+    Open [upforge.app](https://upforge.app) in your browser. Click the **Start Learning Free** button on the hero section to go to the sign-up page.
+  </Step>
+
+  <Step title="Sign up with your email or a social provider">
+    On the sign-up screen you can register in two ways:
+
+    - **Email and password** — enter your email address, choose a password, and follow the verification prompt.
+    - **Social sign-in** — click the Google (or other available) provider button to authenticate with your existing account in a single step. No password is created on the UpForge side.
+
+    UpForge's authentication is powered by [Clerk](https://clerk.com), so your credentials are handled securely and never stored in plain text.
+  </Step>
+
+  <Step title="Complete your profile">
+    After verifying your identity, UpForge creates your learner profile. Your **username is auto-filled** from the local part of your email address (everything before the `@`). You can update your display name and avatar later from your Clerk user settings.
+  </Step>
+
+  <Step title="Land on your dashboard — you're ready to start learning">
+    UpForge redirects you to `/dashboard`. Your brand-new profile starts with:
+
+    - **0 XP** and **Level 1**
+    - **0-day streak** (it increments the moment you complete your first lesson today)
+    - **0 active courses** — head to [Courses](/learning/browse-courses) to enroll in your first one
+
+    Everything is set up automatically. You don't need to configure anything before you begin.
+  </Step>
+</Steps>
+
+## Sign in as a returning user
+
+If you already have an account, go to `/sign-in` (or click **Sign In** from the homepage). Enter your email and password, or use the same social provider you signed up with. UpForge remembers your session, so on most devices you won't need to sign in again after the first visit.
+
+<Tip>
+  Bookmark `/dashboard` for instant access. Authenticated sessions skip the sign-in page entirely and drop you straight onto your learning dashboard.
+</Tip>
+
+## What happens on your first login
+
+When you sign in for the very first time, UpForge automatically creates your learner record in the database with these starting values:
+
+| Field | Starting value |
+|---|---|
+| XP (points) | 0 |
+| Level | 1 |
+| Current streak | 0 days |
+| Longest streak | 0 days |
+| Active courses | 0 |
+
+Your profile is seeded from the details supplied by your authentication provider — name, email, and profile picture (if available). From that point on, every lesson you complete, every streak you maintain, and every achievement you unlock is recorded against your account in real time.

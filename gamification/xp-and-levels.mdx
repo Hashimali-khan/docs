@@ -1,0 +1,79 @@
+---
+title: "XP and Levels: How to Level Up on UpForge"
+sidebarTitle: "XP & Levels"
+description: "Understand how UpForge XP is earned through lesson completions and achievements. Learn the level formula and how to reach higher levels faster."
+---
+
+XP (experience points) drive your progression on UpForge. Every lesson you complete and every achievement you unlock adds to your total XP, raising your level and pushing you up the leaderboard. The more XP you earn, the higher your level — and the more your dedication shows.
+
+## Earning XP
+
+There are two ways to earn XP on UpForge:
+
+### 1. Completing Lessons
+
+Each course on UpForge has a total `points` value. When you complete a lesson, UpForge awards you a share of that course's points, calculated by dividing the course's total XP evenly across all its lessons:
+
+```typescript
+const pointsPerLesson = Math.floor(coursePoints / totalLessons);
+```
+
+For example, a course worth 500 XP with 10 lessons awards you **50 XP** per lesson completed. Points are credited to your account automatically the moment you mark a lesson as complete.
+
+### 2. Unlocking Achievements
+
+Hitting milestone achievements grants you a one-time bonus XP award on top of your per-lesson earnings. Current achievement bonuses include:
+
+| Achievement | Bonus XP |
+|---|---|
+| 📚 Lesson Explorer | 100 XP |
+| 🔥 Streak Starter | 150 XP |
+| 🎓 Course Master | 200 XP |
+
+See [Achievements](/gamification/achievements) for the full list of criteria and how to unlock each one.
+
+---
+
+## Level Formula
+
+Your level is calculated directly from your total XP using the following formula:
+
+```typescript
+// Your current level
+export function calculateLevel(points: number): number {
+  return Math.floor(Math.sqrt(points / 100)) + 1;
+}
+
+// XP needed to reach your next level
+export function calculateNextLevelPoints(points: number): number {
+  const currentLevel = calculateLevel(points);
+  const nextLevelPoints = Math.pow(currentLevel, 2) * 100;
+  return nextLevelPoints;
+}
+```
+
+Each level requires progressively more XP than the last. The XP threshold for each level follows the formula `level² × 100`. Here's what that looks like in practice:
+
+| Level | XP Required |
+|---|---|
+| 1 | 0 XP |
+| 2 | 100 XP |
+| 3 | 400 XP |
+| 4 | 900 XP |
+| 5 | 1,600 XP |
+| 10 | 8,100 XP |
+
+Your level increases automatically as your XP crosses each threshold — there is nothing to activate or claim.
+
+---
+
+## Viewing Your Level
+
+Your current level appears in two places:
+
+- **Dashboard** — The **Total XP** card displays your total XP alongside your current level badge. Check it any time to see how close you are to your next level.
+- **Leaderboard** — Every entry on the [Leaderboard](/gamification/leaderboard) shows each learner's level next to their XP total, so you can compare your progress at a glance.
+
+<Tip>
+  Complete achievement milestones for large one-time XP boosts. Stacking lesson XP with achievement bonuses is the fastest way to climb levels — especially early on when thresholds are low.
+</Tip>

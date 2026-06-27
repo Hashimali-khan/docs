@@ -1,13 +1,11 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "UpForge",
+  "projectType": "saas",
+  "projectName": "UpForge",
+  "projectDescription": "A gamified online learning platform where learners take project-based courses, earn XP, build streaks, unlock achievements, and compete on leaderboards.",
   "theme": "almond",
-  "colors": {
-    "primary": "#7c3aed",
-    "light": "#ede9fe",
-    "dark": "#4c1d95"
-  },
-  "favicon": "/favicon.svg",
+  "primaryColor": "#7c3aed",
+  "lightColor": "#ede9fe",
+  "darkColor": "#4c1d95",
   "navigation": {
     "tabs": [
       {
@@ -72,10 +70,27 @@
       }
     ]
   },
-  "navbar": {
-    "primary": {
-      "type": "github",
-      "href": "https://github.com/Hashimali-khan/UpForge"
-    }
-  }
+  "keyFeatures": [
+    "Project-based video course catalog powered by YouTube playlists",
+    "XP and level progression system (sqrt-based level formula)",
+    "Daily learning streaks with automatic tracking",
+    "Achievement unlock system with multiple criteria types (lessons, courses, streak)",
+    "Global leaderboard ranked by total XP",
+    "Interactive dashboard with bento-style stats overview",
+    "Dark/light theme support",
+    "Secure authentication via Clerk (sign-in/sign-up)"
+  ],
+  "publicApiSurface": [
+    "GET /api/courses — list all courses with enrollment status",
+    "GET /api/courses/[courseId] — course details with lesson progress",
+    "POST /api/courses/[courseId]/enroll — enroll in a course",
+    "DELETE /api/courses/[courseId]/enroll — unenroll from a course",
+    "POST /api/progress — mark a lesson complete/incomplete and award XP",
+    "GET /api/achievements — list all achievements with earned status",
+    "GET /api/leaderboard — ranked leaderboard with current user rank",
+    "GET /api/user/stats — full dashboard stats for signed-in user",
+    "POST /api/user/sync — sync Clerk user profile into the database",
+    "calculateLevel(points: number): number",
+    "calculateNextLevelPoints(points: number): number"
+  ]
 }

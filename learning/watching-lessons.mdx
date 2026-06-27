@@ -1,0 +1,66 @@
+---
+title: "Watch Lessons and Navigate Course Content on UpForge"
+sidebarTitle: "Watching Lessons"
+description: "Learn how to use the UpForge course player: navigate lessons with the curriculum sidebar, watch embedded YouTube videos, and mark lessons complete."
+---
+
+The UpForge course player is where your learning happens. Each course page combines an embedded video player with a structured curriculum sidebar, giving you everything you need to watch lessons, track what you have covered, and earn XP — all in one place.
+
+## The Course Player Layout
+
+The course player uses a two-column layout:
+
+<CardGroup cols={2}>
+  <Card title="Video Area" icon="play">
+    The left two-thirds of the screen (on desktop). Displays the currently selected lesson video, the lesson title, and the **Mark as Complete** button. On mobile, this stacks above the sidebar.
+  </Card>
+  <Card title="Curriculum Sidebar" icon="list">
+    The right third of the screen. Lists every lesson in the course in order. Shows your progress bar (enrolled learners only), completion status for each lesson, and the currently playing lesson highlighted in violet.
+  </Card>
+</CardGroup>
+
+Above both columns, the **course header banner** shows the course title, description, total duration, XP value, difficulty level, and the Enroll / Unenroll button.
+
+## Navigating Lessons
+
+The curriculum sidebar on the right lists every lesson in the course in sequence. Each entry shows:
+
+- A **status icon** — a number for unwatched lessons, a violet play icon for the currently selected lesson, and a green check mark for completed lessons.
+- The **lesson title**.
+- A **Video Lesson** label confirming the content type.
+
+Click any lesson in the sidebar to load it in the video player instantly. You do not need to finish one lesson before jumping to another.
+
+**Lesson locking:** If you are not enrolled, only the first lesson is accessible. All other lessons display a lock icon and cannot be selected until you enroll.
+
+## Marking a Lesson Complete
+
+Once you have finished watching a lesson, click the **Mark as Complete** button below the video player. The button is only visible when you are enrolled in the course.
+
+When you mark a lesson complete, UpForge does the following in a single action:
+
+1. **Records your progress** for that lesson with a timestamp.
+2. **Awards XP** — the course's total point value is divided evenly across all its lessons (`coursePoints ÷ totalLessons`), and that amount is added to your total XP immediately.
+3. **Updates your streak** — if this is your first completed lesson today, your daily streak counter advances.
+4. **Checks for new achievements** — UpForge evaluates whether you have now met the criteria for any locked achievements (for example, completing a milestone number of lessons or finishing a course) and unlocks them automatically.
+5. **Advances to the next lesson** — the player automatically selects the next lesson in the curriculum so you can keep going without clicking in the sidebar.
+
+After completion, the button changes to a green **Completed** state and the lesson receives a green check mark in the sidebar. You cannot un-complete a lesson.
+
+## XP Per Lesson
+
+Each lesson's XP value is calculated as:
+
+```
+XP per lesson = floor(course total points ÷ total lessons in course)
+```
+
+For example, a 100-XP course with 10 lessons awards **10 XP** per completed lesson. You can see the course's total XP value on the course header banner before you enroll.
+
+<Tip>
+  UpForge automatically loads the **first uncompleted lesson** when you open a course you are already enrolled in. So every time you return, you land right where you left off — no need to scroll through the sidebar to find your place.
+</Tip>
+
+<Note>
+  All video content in UpForge is hosted on YouTube and embedded directly in the course player. The videos play inside the platform — you do not need to open a separate browser tab or have a YouTube account. Make sure your browser allows embedded iframes from YouTube if you are using strict privacy extensions.
+</Note>

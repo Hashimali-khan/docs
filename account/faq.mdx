@@ -1,0 +1,108 @@
+---
+title: "UpForge Frequently Asked Questions"
+sidebarTitle: "FAQ"
+description: "Answers to the most common UpForge questions: course access, XP resets, streak rules, achievement criteria, account issues, and API usage."
+---
+
+Got a question about how UpForge works? Browse the answers below. If you don't find what you're looking for, use the **Contact** link in the footer or open a GitHub issue on the UpForge repository.
+
+<AccordionGroup>
+
+  <Accordion title="Is UpForge free to use?">
+    Yes — UpForge is completely free. You don't need a credit card or a paid subscription to access any part of the platform. Simply sign up with your preferred authentication provider and start learning immediately. Every course, achievement, leaderboard position, and gamification feature is available to all learners at no cost.
+  </Accordion>
+
+  <Accordion title="How do I earn XP?">
+    You earn XP in two ways:
+
+    **1. Completing lessons**
+    Every time you finish a lesson, UpForge awards you XP proportional to the point value assigned to that course. Work through lessons consistently to accumulate XP and climb levels.
+
+    **2. Unlocking achievements**
+    Each achievement awards a flat XP bonus when its criteria are met. For example, unlocking **Lesson Explorer** (complete 5 lessons) earns you 100 XP, **Course Master** (complete your first course) earns 200 XP, and **Streak Starter** (maintain a 7-day streak) earns 150 XP. Achievements stack on top of your lesson XP — so the more milestones you hit, the faster you level up.
+  </Accordion>
+
+  <Accordion title="What happens if I miss a day?">
+    Your **current streak resets to 0** if you don't complete at least one lesson before midnight on any given day. However:
+
+    - Your **total XP is not affected** — all XP you've earned stays on your account.
+    - Your **level is not affected** — level is calculated from cumulative XP and never goes down.
+    - Your **longest streak record is preserved** — UpForge keeps your personal best streak separate and never resets it.
+
+    To start a new streak, simply complete any lesson. Your streak counter will increment to 1 and begin building again from that day.
+  </Accordion>
+
+  <Accordion title="How do levels work?">
+    Your level is calculated automatically from your total XP using the following formula:
+
+    ```
+    Level = floor(sqrt(XP ÷ 100)) + 1
+    ```
+
+    A few reference points to illustrate the progression:
+
+    | Total XP | Level |
+    |---|---|
+    | 0 – 99 | 1 |
+    | 100 – 399 | 2 |
+    | 400 – 899 | 3 |
+    | 900 – 1,599 | 4 |
+    | 1,600 – 2,499 | 5 |
+
+    Because the formula uses a square root, each subsequent level requires exponentially more XP than the last. Unlocking achievements is a great way to close the gap faster, since they award bonus XP on top of your lesson completions.
+  </Accordion>
+
+  <Accordion title="Can I unenroll from a course?">
+    Yes. Open the course you want to leave and click **Unenroll**. Your enrollment is removed and the course no longer appears in your active courses list.
+
+    Importantly, your **completed lesson progress is saved** in UpForge. If you re-enroll in the same course later, your previously completed lessons are still recorded and you can pick up right where you left off — you won't have to start from scratch.
+  </Accordion>
+
+  <Accordion title="Why are my achievements not unlocking?">
+    Achievements are checked and awarded automatically each time you complete a lesson. If you believe an achievement should have unlocked but hasn't, check the following:
+
+    1. **Make sure you're signed in.** Achievement checks require an active, authenticated session. If your session expired mid-lesson, sign back in and try again.
+    2. **Verify the criteria.** Review the achievement's description to confirm you've met the exact requirement (e.g., the lesson count threshold or the streak length).
+    3. **Trigger a recheck.** Complete another lesson to fire the achievement evaluation logic again. This often resolves edge cases where the check wasn't triggered correctly.
+
+    If the issue persists after these steps, reach out via the Contact link in the footer or open a GitHub issue with details about the achievement you're targeting.
+  </Accordion>
+
+  <Accordion title="How is the leaderboard ranking determined?">
+    The leaderboard ranks all learners by **total XP**, from highest to lowest. The top 100 users are displayed on the leaderboard page.
+
+    If your rank falls outside the top 100, don't worry — your **personal rank is always shown** alongside the leaderboard so you can see exactly where you stand and how far you are from the next position. Keep completing lessons and unlocking achievements to climb the ranks.
+  </Accordion>
+
+  <Accordion title="Are course videos available offline?">
+    No. Course videos are embedded directly from **YouTube** and require an active internet connection to stream. UpForge does not offer video downloads or an offline playback mode.
+
+    If you have an unreliable connection, we recommend reviewing the written lesson materials in advance where available, and watching the videos when you have a stable connection.
+  </Accordion>
+
+  <Accordion title="I signed in but my dashboard is empty. What do I do?">
+    Your UpForge account record is created on your **very first dashboard visit** — it isn't created at sign-up time. If you land on the dashboard and your stats, courses, or progress appear missing, try the following steps:
+
+    <Steps>
+      <Step title="Sign out">
+        Click your avatar in the top-right corner and sign out of UpForge.
+      </Step>
+      <Step title="Sign back in">
+        Sign in again with the same account. This triggers a fresh profile sync and ensures your account record is created or updated in the UpForge database.
+      </Step>
+      <Step title="Reload the dashboard">
+        Navigate to the dashboard. Your profile and stats should now load correctly.
+      </Step>
+    </Steps>
+
+    If the dashboard is still empty after following these steps, contact support via the footer **Contact** link.
+  </Accordion>
+
+  <Accordion title="Where can I get help?">
+    You have two official support channels:
+
+    - **Contact form** — Use the **Contact** link in the UpForge footer to send a message directly to the team. This is the best route for account-specific issues or questions that aren't covered here.
+    - **GitHub Issues** — Open an issue on the UpForge repository if you've found a bug or want to suggest a feature. Include as much detail as possible (steps to reproduce, screenshots, your browser/OS) so the team can investigate quickly.
+  </Accordion>
+
+</AccordionGroup>

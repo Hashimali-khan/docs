@@ -1,0 +1,304 @@
+---
+title: "Courses API Endpoints: List, Details, and Enrollment"
+sidebarTitle: "Courses"
+description: "REST API endpoints for browsing courses, fetching course details with lesson progress, enrolling, and unenrolling. All endpoints require authentication."
+---
+
+The Courses API lets you browse every course on UpForge, inspect lesson-level detail, and manage your enrollment status. All four endpoints require a valid session — unauthenticated requests receive a `401 Unauthorized` response.
+
+---
+
+## GET /api/courses
+
+<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
+
+Returns every course on the platform alongside your enrollment status and the total number of lessons it contains.
+
+### Response fields
+
+<ResponseField name="id" type="string" required>
+  UUID that uniquely identifies the course.
+</ResponseField>
+
+<ResponseField name="title" type="string" required>
+  Human-readable course title.
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  Short summary of what the course covers.
+</ResponseField>
+
+<ResponseField name="thumbnail" type="string | null">
+  URL for the course cover image, or `null` when no thumbnail has been set.
+</ResponseField>
+
+<ResponseField name="duration" type="number" required>
+  Estimated course length in **minutes**.
+</ResponseField>
+
+<ResponseField name="difficulty" type="string" required>
+  Difficulty label for the course (e.g. `"beginner"`, `"intermediate"`, `"advanced"`).
+</ResponseField>
+
+<ResponseField name="points" type="number" required>
+  Total XP available from completing every lesson in this course. Individual lesson XP is calculated as `floor(points / totalLessons)`.
+</ResponseField>
+
+<ResponseField name="totalLessons" type="number" required>
+  Number of lessons in the course.
+</ResponseField>
+
+<ResponseField name="enrolled" type="boolean" required>
+  `true` if you are currently enrolled in this course, `false` otherwise.
+</ResponseField>
+
+<ResponseField name="progress" type="number" required>
+  Always `0` in the current implementation. For your real per-course completion percentage, call [GET /api/user/stats](/api-reference/endpoints/user#get-api-user-stats) and inspect `coursesInProgress` / `completedCourses`.
+</ResponseField>
+
+<Note>
+  The `progress` field in this response is a placeholder. Use `GET /api/user/stats` to get your accurate progress numbers.
+</Note>
+
+### Example response
+
+```json
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Full-Stack JavaScript",
+    "description": "Build real apps with React and Node.js",
+    "thumbnail": "https://img.youtube.com/vi/xyz/maxresdefault.jpg",
+    "duration": 240,
+    "difficulty": "beginner",
+    "points": 500,
+    "totalLessons": 20,
+    "enrolled": true,
+    "progress": 0
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "title": "Python for Data Science",
+    "description": "Analyze data with pandas, NumPy, and Matplotlib",
+    "thumbnail": null,
+    "duration": 180,
+    "difficulty": "intermediate",
+    "points": 400,
+    "totalLessons": 15,
+    "enrolled": false,
+    "progress": 0
+  }
+]
+```
+
+---
+
+## GET /api/courses/:courseId
+
+<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
+
+Returns the full details for a single course, including its ordered lesson list and your per-lesson completion status.
+
+### Path parameters
+
+<ParamField path="courseId" type="string" required>
+  The UUID of the course you want to retrieve.
+</ParamField>
+
+### Response fields
+
+All top-level fields from the courses list are returned, plus:
+
+<ResponseField name="lessons" type="Lesson[]" required>
+  Lessons sorted in ascending display order.
+
+  <Expandable title="Lesson object fields">
+    <ResponseField name="id" type="string">UUID of the lesson.</ResponseField>
+    <ResponseField name="courseId" type="string">UUID of the parent course.</ResponseField>
+    <ResponseField name="title" type="string">Lesson title.</ResponseField>
+    <ResponseField name="description" type="string | null">Optional lesson description.</ResponseField>
+    <ResponseField name="content" type="string">Main lesson body text or HTML.</ResponseField>
+    <ResponseField name="videoUrl" type="string | null">Embedded video URL, or `null` if the lesson is text-only.</ResponseField>
+    <ResponseField name="order" type="number">1-based position of the lesson within the course.</ResponseField>
+    <ResponseField name="completed" type="boolean">Whether you have marked this lesson complete. Always `false` for unenrolled users.</ResponseField>
+    <ResponseField name="createdAt" type="string">ISO 8601 timestamp of when the lesson was created.</ResponseField>
+    <ResponseField name="updatedAt" type="string">ISO 8601 timestamp of the last update.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="enrolled" type="boolean" required>
+  `true` if you are enrolled in this course.
+</ResponseField>
+
+<ResponseField name="completed" type="boolean" required>
+  `true` if your enrollment record is marked complete (i.e. you finished the course).
+</ResponseField>
+
+### Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `401`  | You are not authenticated. |
+| `404`  | No course exists with the given `courseId`. |
+
+### Example response
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "title": "Full-Stack JavaScript",
+  "description": "Build real apps with React and Node.js",
+  "thumbnail": "https://img.youtube.com/vi/xyz/maxresdefault.jpg",
+  "duration": 240,
+  "difficulty": "beginner",
+  "points": 500,
+  "enrolled": true,
+  "completed": false,
+  "createdAt": "2024-01-15T10:00:00.000Z",
+  "updatedAt": "2024-06-01T08:30:00.000Z",
+  "lessons": [
+    {
+      "id": "lesson-uuid-001",
+      "courseId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "title": "Setting Up Your Environment",
+      "description": "Install Node.js, npm, and your code editor",
+      "content": "In this lesson we will...",
+      "videoUrl": "https://www.youtube.com/embed/abc123",
+      "order": 1,
+      "completed": true,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "lesson-uuid-002",
+      "courseId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "title": "Intro to React Hooks",
+      "description": null,
+      "content": "React Hooks let you...",
+      "videoUrl": null,
+      "order": 2,
+      "completed": false,
+      "createdAt": "2024-01-15T10:05:00.000Z",
+      "updatedAt": "2024-01-15T10:05:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+## POST /api/courses/:courseId/enroll
+
+<span style={{display:"inline-block", background:"#3b82f6", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>POST</span>
+
+Enrolls you in the specified course. No request body is required.
+
+### Path parameters
+
+<ParamField path="courseId" type="string" required>
+  The UUID of the course to enroll in.
+</ParamField>
+
+### Response fields
+
+<ResponseField name="success" type="boolean">
+  `true` when the enrollment was created.
+</ResponseField>
+
+<ResponseField name="enrolled" type="boolean">
+  `true` if you were already enrolled before this request. When returned, `success` is omitted and the response is `{ "message": "Already enrolled", "enrolled": true }`.
+</ResponseField>
+
+<ResponseField name="enrollment" type="object">
+  The newly created enrollment record, returned only when a new enrollment was made.
+
+  <Expandable title="Enrollment object fields">
+    <ResponseField name="id" type="string">UUID of the enrollment record.</ResponseField>
+    <ResponseField name="userId" type="string">Your internal UpForge user ID.</ResponseField>
+    <ResponseField name="courseId" type="string">The enrolled course's UUID.</ResponseField>
+    <ResponseField name="enrolledAt" type="string">ISO 8601 timestamp of enrollment.</ResponseField>
+    <ResponseField name="completed" type="boolean">Always `false` on a new enrollment.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+### Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `401`  | You are not authenticated. |
+| `404`  | No course exists with the given `courseId`, or your user record was not found. |
+| `500`  | An unexpected server error occurred. |
+
+### Example — new enrollment
+
+```json
+{
+  "success": true,
+  "enrollment": {
+    "id": "enroll-uuid-here",
+    "userId": "user-uuid-here",
+    "courseId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "enrolledAt": "2024-11-01T12:00:00.000Z",
+    "completed": false
+  },
+  "message": "Successfully enrolled in course"
+}
+```
+
+### Example — already enrolled
+
+```json
+{
+  "message": "Already enrolled",
+  "enrolled": true
+}
+```
+
+---
+
+## DELETE /api/courses/:courseId/enroll
+
+<span style={{display:"inline-block", background:"#ef4444", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>DELETE</span>
+
+Removes your enrollment from a course. Any lesson progress you have recorded is **not** deleted.
+
+### Path parameters
+
+<ParamField path="courseId" type="string" required>
+  The UUID of the course to unenroll from.
+</ParamField>
+
+### Response fields
+
+<ResponseField name="success" type="boolean">
+  `true` when the enrollment record was removed.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable confirmation message.
+</ResponseField>
+
+### Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `401`  | You are not authenticated. |
+| `404`  | Your user record was not found. |
+| `500`  | An unexpected server error occurred. |
+
+### Example response
+
+```json
+{
+  "success": true,
+  "message": "Successfully unenrolled from course"
+}
+```
+
+<Warning>
+  Unenrolling does not delete your lesson progress records. If you re-enroll later, your previously completed lessons will still appear as completed.
+</Warning>

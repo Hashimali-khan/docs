@@ -1,0 +1,95 @@
+---
+title: "Manage Your UpForge Profile and Account Settings"
+sidebarTitle: "Profile"
+description: "View and update your UpForge profile: display name, username, avatar, and learning stats. See how your profile data syncs automatically from your account."
+---
+
+Your UpForge profile is the single source of truth for both your identity and your learning journey. It stores everything from your display name and avatar to every XP point you've earned, the streak you're building, and the level you've reached — all in one place.
+
+## Your Profile Information
+
+UpForge stores the following fields on your profile:
+
+| Field | Description |
+|---|---|
+| **Name** | Your full display name, pulled from your sign-in account |
+| **Username** | Your unique handle, shown on the leaderboard and dashboard |
+| **Avatar** | Your profile picture, sourced from your sign-in provider |
+| **Email** | The address tied to your authentication account (read-only) |
+
+<Note>
+  Profile editing — including your name and username — is managed through your sign-in provider's account settings. Any changes you make there sync to UpForge automatically on your next login.
+</Note>
+
+## Display Name
+
+Your name and username both appear on the **dashboard welcome banner** ("Welcome back, [name]!") and on the public **leaderboard**.
+
+UpForge resolves your display name in this order of priority:
+
+<Steps>
+  <Step title="Clerk username">
+    If you have a username set in your sign-in account, that is used first.
+  </Step>
+  <Step title="First name">
+    If no username is set, your first name is used.
+  </Step>
+  <Step title="Email prefix">
+    If neither is available, UpForge falls back to the part of your email address before the `@` symbol (e.g., `janedoe` from `janedoe@example.com`).
+  </Step>
+  <Step title="Default">
+    If none of the above can be resolved, your display name defaults to **Learner**.
+  </Step>
+</Steps>
+
+<Tip>
+  Your username appears on the public leaderboard — choose one you're proud of!
+</Tip>
+
+## Avatar
+
+Your profile picture is pulled automatically from your sign-in provider account. UpForge does not host or store a separate copy of your avatar — it always reflects the current image from your provider. To update your avatar, change your profile picture in your sign-in account settings. The next time you visit the UpForge dashboard, the new image appears automatically.
+
+## Learning Stats
+
+Your profile surfaces the following gamification stats so you can track your progress at a glance:
+
+<CardGroup cols={2}>
+  <Card title="Total XP" icon="star">
+    The cumulative experience points you've earned from completing lessons and unlocking achievements.
+  </Card>
+  <Card title="Current Level" icon="arrow-up">
+    Your level, calculated from your total XP using the formula: **Level = floor(√(XP ÷ 100)) + 1**. Higher levels require exponentially more XP to reach.
+  </Card>
+  <Card title="Current Streak" icon="flame">
+    The number of consecutive days you've completed at least one lesson. Miss a day and the streak resets to zero.
+  </Card>
+  <Card title="Longest Streak" icon="trophy">
+    Your all-time personal best streak. This value is never reset, even if your current streak ends.
+  </Card>
+</CardGroup>
+
+These stats also power the **header badges** — the XP and streak indicators visible at the top of every page while you're logged in.
+
+## Automatic Sync
+
+Every time you visit the dashboard, UpForge automatically syncs your latest profile information from your authentication account. The sync updates your name, username, avatar URL, and email in the UpForge database without any action required from you.
+
+Here's what happens behind the scenes on each dashboard visit:
+
+<Steps>
+  <Step title="Authentication check">
+    UpForge verifies your session with your sign-in provider.
+  </Step>
+  <Step title="Profile lookup">
+    Your UpForge account record is located using your provider's user ID.
+  </Step>
+  <Step title="First-time setup">
+    If no account record exists yet (first-ever visit), UpForge creates one and initialises your stats at XP 0, Level 1, and a streak of 0.
+  </Step>
+  <Step title="Profile update">
+    If an account record already exists, UpForge overwrites your name, username, avatar, and email with the latest values from your sign-in provider.
+  </Step>
+</Steps>
+
+No manual profile update is ever needed — your information stays current automatically.

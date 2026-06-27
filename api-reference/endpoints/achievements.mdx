@@ -1,0 +1,119 @@
+---
+title: "Achievements API: List All Badges and Earned Status"
+sidebarTitle: "Achievements"
+description: "GET /api/achievements returns all platform achievements with your earned status, earned date, and point value. Requires authentication."
+---
+
+The Achievements API gives you a complete picture of every badge available on UpForge and tells you which ones you've already unlocked. Achievements are awarded automatically when you complete lessons — you never need to claim them manually.
+
+---
+
+## GET /api/achievements
+
+<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
+
+Returns all achievements defined on the platform, each annotated with your personal earned status and the timestamp you unlocked it (if applicable).
+
+### Response fields
+
+The response is an **array** of achievement objects.
+
+<ResponseField name="id" type="string" required>
+  UUID that uniquely identifies the achievement.
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Short display name for the achievement (e.g. `"Lesson Explorer"`).
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  Human-readable description of what you need to do to earn the achievement.
+</ResponseField>
+
+<ResponseField name="icon" type="string" required>
+  Emoji icon displayed alongside the achievement (e.g. `"📚"`).
+</ResponseField>
+
+<ResponseField name="points" type="number" required>
+  Bonus XP awarded to your account when you unlock this achievement. Added on top of any lesson XP earned in the same action.
+</ResponseField>
+
+<ResponseField name="criteria" type="object" required>
+  Machine-readable unlock conditions. The shape varies by achievement type.
+
+  <Expandable title="criteria object fields">
+    <ResponseField name="type" type="string">
+      The kind of activity measured. One of:
+      - `"lessons_completed"` — total lessons you've marked complete
+      - `"courses_completed"` — total courses you've finished
+      - `"streak"` — consecutive days with at least one lesson completed
+    </ResponseField>
+    <ResponseField name="count" type="number">
+      Target quantity for `lessons_completed` and `courses_completed` criteria.
+    </ResponseField>
+    <ResponseField name="days" type="number">
+      Target number of days for `streak` criteria.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="earned" type="boolean" required>
+  `true` if you have unlocked this achievement, `false` otherwise.
+</ResponseField>
+
+<ResponseField name="earnedAt" type="string | null" required>
+  ISO 8601 timestamp of when you earned the achievement. `null` if you haven't earned it yet.
+</ResponseField>
+
+### Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `401`  | You are not authenticated. |
+| `404`  | Your user record was not found. |
+| `500`  | An unexpected server error occurred. |
+
+### Example response
+
+```json
+[
+  {
+    "id": "ach-uuid-001",
+    "name": "Lesson Explorer",
+    "description": "Complete 5 lessons",
+    "icon": "📚",
+    "points": 100,
+    "criteria": { "type": "lessons_completed", "count": 5 },
+    "earned": true,
+    "earnedAt": "2024-11-01T14:32:00.000Z"
+  },
+  {
+    "id": "ach-uuid-002",
+    "name": "Course Master",
+    "description": "Complete your first course",
+    "icon": "🎓",
+    "points": 200,
+    "criteria": { "type": "courses_completed", "count": 1 },
+    "earned": false,
+    "earnedAt": null
+  },
+  {
+    "id": "ach-uuid-003",
+    "name": "Week Warrior",
+    "description": "Maintain a 7-day learning streak",
+    "icon": "🔥",
+    "points": 150,
+    "criteria": { "type": "streak", "days": 7 },
+    "earned": false,
+    "earnedAt": null
+  }
+]
+```
+
+<Note>
+  Achievement checks run automatically each time you complete a lesson via `POST /api/progress`. You don't need to poll this endpoint to trigger unlocks — just call it when you want to display your badge collection.
+</Note>
+
+<Tip>
+  The `points` field on each achievement is the **bonus** XP added to your total on unlock. Your `totalXP` in `/api/user/stats` already reflects all achievement bonuses you've earned so far.
+</Tip>
