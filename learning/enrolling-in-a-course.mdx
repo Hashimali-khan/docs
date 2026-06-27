@@ -1,5 +1,5 @@
 ---
-title: "How to Enroll and Unenroll from UpForge Courses"
+title: "How to Enroll in and Unenroll from an UpForge Course"
 sidebarTitle: "Enrolling"
 description: "Learn how to enroll in UpForge courses with one click, start watching lessons, and unenroll if you change your mind. No restrictions on enrollment."
 ---
@@ -22,7 +22,7 @@ Enrolling in a course on UpForge takes a single click and has no prerequisites, 
 
 ## What Happens When You Enroll
 
-When you click **Enroll Now**, UpForge performs the following actions behind the scenes:
+When you click **Enroll Now**, UpForge performs the following actions:
 
 - **Creates an enrollment record** linking your account to the course.
 - **Unlocks all lessons** in the curriculum sidebar (previously only the first lesson was accessible to non-enrolled visitors).
@@ -50,6 +50,26 @@ There is no penalty for unenrolling. You can re-enroll in the same course later 
 | Earn XP for lessons | ❌ | ✅ |
 | See progress bar in sidebar | ❌ | ✅ |
 | Course appears on dashboard | ❌ | ✅ |
+
+## Enrollment API Endpoints
+
+You can also manage enrollment programmatically using the following authenticated API endpoints:
+
+**Enroll in a course**
+
+```
+POST /api/courses/:courseId/enroll
+```
+
+Returns a JSON object confirming the enrollment, or a message indicating you were already enrolled.
+
+**Unenroll from a course**
+
+```
+DELETE /api/courses/:courseId/enroll
+```
+
+Returns a JSON object confirming the removal of your enrollment. Both endpoints require you to be signed in. See [API Reference — Courses](/api-reference/endpoints/courses) for full details.
 
 <Note>
   **Auto-enrollment:** You do not have to click Enroll before you start learning. If you mark a lesson complete directly in the course player and you are not yet enrolled, UpForge automatically enrolls you in that course before recording the completion. This means you never lose credit for a lesson you complete.

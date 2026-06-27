@@ -1,10 +1,10 @@
 ---
-title: "Authenticate Requests to the UpForge API"
+title: "UpForge API Authentication: Cookies, Tokens and Errors"
 sidebarTitle: "Authentication"
 description: "All UpForge API endpoints require an authenticated session. Learn how authentication works when calling the API from a browser or server context."
 ---
 
-The UpForge API uses session-based authentication. Every endpoint verifies your signed-in session before returning data — unauthenticated requests receive a `401 Unauthorized` response. UpForge uses [Clerk](https://clerk.com) under the hood to manage identity and sessions.
+The UpForge API uses session-based authentication. Every endpoint verifies your signed-in session before returning data — unauthenticated requests receive a `401 Unauthorized` response.
 
 ## Browser Requests
 
@@ -23,7 +23,7 @@ const courses = await res.json();
 
 ## Server-side / Programmatic Access
 
-For server-side scripts or integrations running outside the browser, your session cookie is not available automatically. Instead, you need to pass a valid session token in the `Authorization` header. UpForge uses Clerk for authentication — obtain a session token from the [Clerk dashboard](https://dashboard.clerk.com) or via the Clerk SDK in your backend.
+For server-side scripts or integrations running outside the browser, your session cookie is not available automatically. Instead, you need to pass a valid session token in the `Authorization` header. Obtain a short-lived session token from your account settings or via your backend's authentication flow.
 
 ```javascript server-fetch.js
 const res = await fetch('https://your-upforge-instance.com/api/courses', {
@@ -35,7 +35,7 @@ const res = await fetch('https://your-upforge-instance.com/api/courses', {
 const courses = await res.json();
 ```
 
-Replace `YOUR_SESSION_TOKEN` with a short-lived session token issued by Clerk for your account.
+Replace `YOUR_SESSION_TOKEN` with a short-lived session token issued for your account.
 
 <Warning>
   Never expose session tokens in client-side code or commit them to source control. Treat them with the same care as passwords.
@@ -45,15 +45,15 @@ Replace `YOUR_SESSION_TOKEN` with a short-lived session token issued by Clerk fo
 
 If any API call returns a `401` response, your session has expired or is no longer valid. Sign in again to get a fresh session, then retry the request.
 
-```json
-"Unauthorized"
+```
+Unauthorized
 ```
 
 This plain-text response body is returned for every unauthenticated request across all `/api/*` routes.
 
 ## Protected Routes
 
-UpForge enforces authentication at the middleware level using Clerk. The following are always protected:
+All API and dashboard routes require a valid session. The following rules apply:
 
 - **`/api/*`** — all API routes require a valid session. Unauthenticated requests receive a `401` response immediately.
 - **`/dashboard/*`** — all dashboard pages require a valid session. Unauthenticated requests are automatically redirected to the sign-in page.

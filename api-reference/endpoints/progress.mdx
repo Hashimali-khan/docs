@@ -1,7 +1,7 @@
 ---
-title: "Progress API: Mark Lessons Complete and Earn XP"
+title: "Progress API: Record Lesson Completions and Earn XP"
 sidebarTitle: "Progress"
-description: "POST /api/progress marks a lesson as complete or incomplete. On completion, UpForge awards XP, updates your streak, and checks for new achievements."
+description: "POST /api/progress marks a lesson complete or incomplete. On first completion, UpForge awards XP, updates your streak, and checks for new achievements."
 ---
 
 The Progress API is the heart of UpForge's gamification loop. Every time you finish a lesson, a single `POST` request triggers XP rewards, streak tracking, and achievement evaluation — all in one call.
@@ -10,11 +10,9 @@ The Progress API is the heart of UpForge's gamification loop. Every time you fin
 
 ## POST /api/progress
 
-<span style={{display:"inline-block", background:"#3b82f6", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>POST</span>
-
 Marks a lesson as completed or uncompleted. When a lesson is **newly** completed (i.e. it wasn't already marked complete), UpForge automatically:
 
-1. **Awards XP** — your points increase by `floor(course.points / course.totalLessons)` for that lesson.
+1. **Awards XP** — your points increase by `floor(course.points / totalLessons)` for that lesson.
 2. **Updates your streak** — daily lesson activity is recalculated and `currentStreak` / `longestStreak` are written to your profile.
 3. **Evaluates achievements** — every unearned achievement is checked against your updated stats; any that you now qualify for are unlocked and their bonus XP is added to your total.
 4. **Auto-enrolls you** — if you aren't already enrolled in the course that owns the lesson, an enrollment record is created for you automatically.
@@ -53,7 +51,7 @@ Marks a lesson as completed or uncompleted. When a lesson is **newly** completed
 ```
 
 <Note>
-  XP is awarded only once per lesson. If you mark a lesson incomplete and then re-complete it, the system detects that the lesson was already completed previously and **does not** award XP a second time. The `isNewCompletion` flag in the route logic handles this deduplication.
+  XP is awarded only once per lesson. If you mark a lesson incomplete and then re-complete it, the system detects that the lesson was already completed previously and **does not** award XP a second time. This ensures each lesson can only contribute to your total XP one time.
 </Note>
 
 ### Error responses
@@ -70,7 +68,7 @@ Marks a lesson as completed or uncompleted. When a lesson is **newly** completed
 XP per lesson is proportional to the course's total point value:
 
 ```
-XP per lesson = floor(course.points / course.totalLessons)
+XP per lesson = floor(course.points / totalLessons)
 ```
 
 For example, a 500-point course with 20 lessons awards **25 XP** per lesson.
@@ -81,7 +79,7 @@ For example, a 500-point course with 20 lessons awards **25 XP** per lesson.
 
 ### How achievement unlocks work
 
-After each new completion, the server compares your cumulative stats against every achievement's `criteria` object. The three criteria types currently evaluated are:
+After each new completion, the server compares your cumulative stats against every achievement's `criteria` object. The three criteria types evaluated are:
 
 | Criteria type | Unlocks when |
 |---------------|-------------|

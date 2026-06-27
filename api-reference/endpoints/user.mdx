@@ -1,23 +1,21 @@
 ---
-title: "User API: Stats, Sync, and Account Data"
+title: "User API: Fetch Account Stats and Sync Your Profile"
 sidebarTitle: "User"
-description: "REST endpoints for your UpForge account: GET /api/user/stats returns your full dashboard data, and POST /api/user/sync refreshes your profile from your auth account."
+description: "GET /api/user/stats returns your full dashboard snapshot — XP, streaks, and activity. POST /api/user/sync updates your profile from your auth account."
 ---
 
-The User API provides two endpoints that power your personal dashboard. `GET /api/user/stats` gives you a comprehensive snapshot of your learning progress, gamification stats, and recent activity. `POST /api/user/sync` keeps your UpForge profile in sync with your Clerk authentication account (name, email, and avatar).
+The User API provides two endpoints that power your personal dashboard. `GET /api/user/stats` gives you a comprehensive snapshot of your learning progress, gamification stats, and recent activity. `POST /api/user/sync` keeps your UpForge profile in sync with your authentication account — updating your name, email, and avatar whenever they change.
 
 ---
 
 ## GET /api/user/stats
-
-<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
 
 Returns your complete dashboard stats in a single call — XP, level, streaks, course counts, today's progress toward your daily goal, and a feed of your five most recent lesson completions.
 
 ### Response fields
 
 <ResponseField name="username" type="string" required>
-  Your display name. Resolved in priority order: Clerk username → Clerk first name → email prefix. Falls back to `"Learner"` if none is available.
+  Your display name. Resolved in priority order: username → first name → email prefix. Falls back to `"Learner"` if none is available.
 </ResponseField>
 
 <ResponseField name="level" type="number" required>
@@ -49,7 +47,7 @@ Returns your complete dashboard stats in a single call — XP, level, streaks, c
 </ResponseField>
 
 <ResponseField name="completedCourses" type="number" required>
-  Number of courses whose enrollment record is marked as `completed`.
+  Number of courses whose enrollment record is marked as completed.
 </ResponseField>
 
 <ResponseField name="todayProgress" type="number" required>
@@ -57,7 +55,7 @@ Returns your complete dashboard stats in a single call — XP, level, streaks, c
 </ResponseField>
 
 <ResponseField name="todayCompleted" type="number" required>
-  Number of lessons you have completed today (since midnight in the server's timezone).
+  Number of lessons you have completed today (since midnight).
 </ResponseField>
 
 <ResponseField name="remainingToday" type="number" required>
@@ -82,7 +80,7 @@ Returns your complete dashboard stats in a single call — XP, level, streaks, c
 | `401`  | You are not authenticated. |
 
 <Note>
-  If your UpForge user record doesn't exist yet (e.g. you've authenticated with Clerk but haven't triggered a sync), the endpoint returns a valid zero-state response rather than an error. Call `POST /api/user/sync` first to ensure your record is created.
+  If your UpForge user record doesn't exist yet, the endpoint returns a valid zero-state response rather than an error. Call `POST /api/user/sync` first to ensure your record is created.
 </Note>
 
 ### Example response
@@ -122,11 +120,9 @@ Returns your complete dashboard stats in a single call — XP, level, streaks, c
 
 ## POST /api/user/sync
 
-<span style={{display:"inline-block", background:"#3b82f6", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>POST</span>
+Syncs your authentication profile (name, email, username, and avatar URL) into UpForge. If no record exists for your account yet, one is created. If a record already exists, it is updated with any changed values from your auth profile.
 
-Syncs your Clerk authentication profile (name, email, username, and avatar URL) into the UpForge database. If no record exists for your account yet, one is created. If a record already exists, it is updated with any changed values from Clerk.
-
-No request body is needed — all data is read from your active Clerk session.
+No request body is needed — all data is read from your active session.
 
 ### Response fields
 
@@ -135,15 +131,15 @@ No request body is needed — all data is read from your active Clerk session.
 </ResponseField>
 
 <ResponseField name="user" type="object" required>
-  The full user record as it exists in the database after the sync.
+  The full user record as it exists after the sync.
 
   <Expandable title="User object fields">
     <ResponseField name="id" type="string">Your internal UpForge UUID.</ResponseField>
-    <ResponseField name="clerkId" type="string">Your Clerk user ID.</ResponseField>
-    <ResponseField name="email" type="string">Your email address from Clerk.</ResponseField>
-    <ResponseField name="name" type="string | null">Your display name. Derived from Clerk first + last name, username, or email prefix.</ResponseField>
-    <ResponseField name="username" type="string | null">Your Clerk username, or email prefix if no username is set.</ResponseField>
-    <ResponseField name="avatarUrl" type="string | null">URL of your Clerk profile picture.</ResponseField>
+    <ResponseField name="clerkId" type="string">Your authentication provider user ID.</ResponseField>
+    <ResponseField name="email" type="string">Your email address.</ResponseField>
+    <ResponseField name="name" type="string | null">Your display name. Derived from first + last name, username, or email prefix.</ResponseField>
+    <ResponseField name="username" type="string | null">Your username, or email prefix if no username is set.</ResponseField>
+    <ResponseField name="avatarUrl" type="string | null">URL of your profile picture.</ResponseField>
     <ResponseField name="points" type="number">Your total XP (unchanged by a sync).</ResponseField>
     <ResponseField name="level" type="number">Your current level (unchanged by a sync).</ResponseField>
     <ResponseField name="currentStreak" type="number">Your current streak (unchanged by a sync).</ResponseField>
@@ -162,8 +158,8 @@ No request body is needed — all data is read from your active Clerk session.
 
 | Status | Meaning |
 |--------|---------|
-| `401`  | You are not authenticated or your Clerk session could not be read. |
-| `500`  | An unexpected error occurred while writing to the database. |
+| `401`  | You are not authenticated or your session could not be read. |
+| `500`  | An unexpected error occurred. The response body will be `{ "error": "Failed to sync user" }`. |
 
 ### Example response — new user
 
@@ -176,7 +172,7 @@ No request body is needed — all data is read from your active Clerk session.
     "email": "jane@example.com",
     "name": "Jane Doe",
     "username": "janedoe",
-    "avatarUrl": "https://img.clerk.com/eyJ...",
+    "avatarUrl": "https://img.example.com/avatar.jpg",
     "points": 0,
     "level": 1,
     "currentStreak": 0,
@@ -200,7 +196,7 @@ No request body is needed — all data is read from your active Clerk session.
     "email": "jane@example.com",
     "name": "Jane Doe",
     "username": "janedoe",
-    "avatarUrl": "https://img.clerk.com/eyJ...",
+    "avatarUrl": "https://img.example.com/avatar.jpg",
     "points": 1850,
     "level": 5,
     "currentStreak": 3,
@@ -218,5 +214,5 @@ No request body is needed — all data is read from your active Clerk session.
 </Tip>
 
 <Warning>
-  A sync **only** updates profile information (name, email, avatar, username). It never resets gamification data such as `points`, `level`, or streak values — those are managed exclusively through the Progress API.
+  A sync **only** updates profile information (name, email, avatar, username). It never resets gamification data such as `points`, `level`, or streak values — those are managed exclusively through the [Progress API](/api-reference/endpoints/progress).
 </Warning>

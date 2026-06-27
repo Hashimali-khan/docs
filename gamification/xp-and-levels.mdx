@@ -12,11 +12,9 @@ There are two ways to earn XP on UpForge:
 
 ### 1. Completing Lessons
 
-Each course on UpForge has a total `points` value. When you complete a lesson, UpForge awards you a share of that course's points, calculated by dividing the course's total XP evenly across all its lessons:
+Each course on UpForge has a total point value. When you complete a lesson, UpForge awards you a share of that course's points, calculated by dividing the course's total XP evenly across all its lessons:
 
-```typescript
-const pointsPerLesson = Math.floor(coursePoints / totalLessons);
-```
+> **XP per lesson** = floor(course total XP ÷ number of lessons in the course)
 
 For example, a course worth 500 XP with 10 lessons awards you **50 XP** per lesson completed. Points are credited to your account automatically the moment you mark a lesson as complete.
 
@@ -36,23 +34,15 @@ See [Achievements](/gamification/achievements) for the full list of criteria and
 
 ## Level Formula
 
-Your level is calculated directly from your total XP using the following formula:
+Your level is calculated directly from your total XP. The two formulas that drive your progression are:
 
-```typescript
-// Your current level
-export function calculateLevel(points: number): number {
-  return Math.floor(Math.sqrt(points / 100)) + 1;
-}
+> **Current level** = floor(√(total XP ÷ 100)) + 1
 
-// XP needed to reach your next level
-export function calculateNextLevelPoints(points: number): number {
-  const currentLevel = calculateLevel(points);
-  const nextLevelPoints = Math.pow(currentLevel, 2) * 100;
-  return nextLevelPoints;
-}
-```
+> **XP needed to reach next level** = (current level)² × 100
 
-Each level requires progressively more XP than the last. The XP threshold for each level follows the formula `level² × 100`. Here's what that looks like in practice:
+Each level requires progressively more XP than the last — the gap between levels widens as you advance. Your level increases automatically as your XP crosses each threshold; there is nothing to activate or claim.
+
+Here's what the thresholds look like in practice:
 
 | Level | XP Required |
 |---|---|
@@ -62,8 +52,6 @@ Each level requires progressively more XP than the last. The XP threshold for ea
 | 4 | 900 XP |
 | 5 | 1,600 XP |
 | 10 | 8,100 XP |
-
-Your level increases automatically as your XP crosses each threshold — there is nothing to activate or claim.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: "Courses API Endpoints: List, Details, and Enrollment"
+title: "Courses API: Browse, Inspect, and Manage Enrollment"
 sidebarTitle: "Courses"
-description: "REST API endpoints for browsing courses, fetching course details with lesson progress, enrolling, and unenrolling. All endpoints require authentication."
+description: "List all courses, fetch course details with lesson progress, enroll in a course, or unenroll. All four endpoints require a valid authenticated session."
 ---
 
 The Courses API lets you browse every course on UpForge, inspect lesson-level detail, and manage your enrollment status. All four endpoints require a valid session — unauthenticated requests receive a `401 Unauthorized` response.
@@ -10,9 +10,98 @@ The Courses API lets you browse every course on UpForge, inspect lesson-level de
 
 ## GET /api/courses
 
-<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
-
 Returns every course on the platform alongside your enrollment status and the total number of lessons it contains.
+
+### Response fields
+
+The response is an **array** of course objects.
+
+<ResponseField name="id" type="string" required>
+  UUID that uniquely identifies the course.
+</ResponseField>
+
+<ResponseField name="title" type="string" required>
+  Human-readable course title.
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  Short summary of what the course covers.
+</ResponseField>
+
+<ResponseField name="thumbnail" type="string | null">
+  URL for the course cover image, or `null` when no thumbnail has been set.
+</ResponseField>
+
+<ResponseField name="duration" type="number" required>
+  Estimated course length in **minutes**.
+</ResponseField>
+
+<ResponseField name="points" type="number" required>
+  Total XP available from completing every lesson in this course. Individual lesson XP is calculated as `floor(points / totalLessons)`.
+</ResponseField>
+
+<ResponseField name="totalLessons" type="number" required>
+  Number of lessons in the course.
+</ResponseField>
+
+<ResponseField name="enrolled" type="boolean" required>
+  `true` if you are currently enrolled in this course, `false` otherwise.
+</ResponseField>
+
+<ResponseField name="progress" type="number" required>
+  Always `0` in this response. For your real per-course completion percentage, call [GET /api/user/stats](/api-reference/endpoints/user#get-apiuserstats) and inspect `coursesInProgress` / `completedCourses`.
+</ResponseField>
+
+<Note>
+  The `progress` field in this response is a placeholder. Use `GET /api/user/stats` to retrieve accurate progress numbers.
+</Note>
+
+### Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `401`  | You are not authenticated. |
+
+### Example response
+
+```json
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "title": "Full-Stack JavaScript",
+    "description": "Build real apps with React and Node.js",
+    "thumbnail": "https://img.youtube.com/vi/xyz/maxresdefault.jpg",
+    "duration": 240,
+    "points": 500,
+    "totalLessons": 20,
+    "enrolled": true,
+    "progress": 0
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "title": "Python for Data Science",
+    "description": "Analyze data with pandas, NumPy, and Matplotlib",
+    "thumbnail": null,
+    "duration": 180,
+    "points": 400,
+    "totalLessons": 15,
+    "enrolled": false,
+    "progress": 0
+  }
+]
+```
+
+---
+
+## GET /api/courses/:courseId
+
+Returns the full details for a single course, including its ordered lesson list and your per-lesson completion status.
+
+### Path parameters
+
+<ParamField path="courseId" type="string" required>
+  The UUID of the course you want to retrieve.
+</ParamField>
 
 ### Response fields
 
@@ -41,73 +130,24 @@ Returns every course on the platform alongside your enrollment status and the to
 </ResponseField>
 
 <ResponseField name="points" type="number" required>
-  Total XP available from completing every lesson in this course. Individual lesson XP is calculated as `floor(points / totalLessons)`.
+  Total XP available from completing every lesson in this course.
 </ResponseField>
 
-<ResponseField name="totalLessons" type="number" required>
-  Number of lessons in the course.
+<ResponseField name="createdAt" type="string" required>
+  ISO 8601 timestamp of when the course was created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string" required>
+  ISO 8601 timestamp of the last update to the course.
 </ResponseField>
 
 <ResponseField name="enrolled" type="boolean" required>
-  `true` if you are currently enrolled in this course, `false` otherwise.
+  `true` if you are enrolled in this course.
 </ResponseField>
 
-<ResponseField name="progress" type="number" required>
-  Always `0` in the current implementation. For your real per-course completion percentage, call [GET /api/user/stats](/api-reference/endpoints/user#get-api-user-stats) and inspect `coursesInProgress` / `completedCourses`.
+<ResponseField name="completed" type="boolean" required>
+  `true` if your enrollment record is marked complete (i.e. you finished the course).
 </ResponseField>
-
-<Note>
-  The `progress` field in this response is a placeholder. Use `GET /api/user/stats` to get your accurate progress numbers.
-</Note>
-
-### Example response
-
-```json
-[
-  {
-    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "title": "Full-Stack JavaScript",
-    "description": "Build real apps with React and Node.js",
-    "thumbnail": "https://img.youtube.com/vi/xyz/maxresdefault.jpg",
-    "duration": 240,
-    "difficulty": "beginner",
-    "points": 500,
-    "totalLessons": 20,
-    "enrolled": true,
-    "progress": 0
-  },
-  {
-    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
-    "title": "Python for Data Science",
-    "description": "Analyze data with pandas, NumPy, and Matplotlib",
-    "thumbnail": null,
-    "duration": 180,
-    "difficulty": "intermediate",
-    "points": 400,
-    "totalLessons": 15,
-    "enrolled": false,
-    "progress": 0
-  }
-]
-```
-
----
-
-## GET /api/courses/:courseId
-
-<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
-
-Returns the full details for a single course, including its ordered lesson list and your per-lesson completion status.
-
-### Path parameters
-
-<ParamField path="courseId" type="string" required>
-  The UUID of the course you want to retrieve.
-</ParamField>
-
-### Response fields
-
-All top-level fields from the courses list are returned, plus:
 
 <ResponseField name="lessons" type="Lesson[]" required>
   Lessons sorted in ascending display order.
@@ -126,20 +166,13 @@ All top-level fields from the courses list are returned, plus:
   </Expandable>
 </ResponseField>
 
-<ResponseField name="enrolled" type="boolean" required>
-  `true` if you are enrolled in this course.
-</ResponseField>
-
-<ResponseField name="completed" type="boolean" required>
-  `true` if your enrollment record is marked complete (i.e. you finished the course).
-</ResponseField>
-
 ### Error responses
 
 | Status | Meaning |
 |--------|---------|
 | `401`  | You are not authenticated. |
-| `404`  | No course exists with the given `courseId`. |
+| `404`  | No course exists with the given `courseId`, or your user record was not found. |
+| `500`  | An unexpected server error occurred. |
 
 ### Example response
 
@@ -152,10 +185,10 @@ All top-level fields from the courses list are returned, plus:
   "duration": 240,
   "difficulty": "beginner",
   "points": 500,
-  "enrolled": true,
-  "completed": false,
   "createdAt": "2024-01-15T10:00:00.000Z",
   "updatedAt": "2024-06-01T08:30:00.000Z",
+  "enrolled": true,
+  "completed": false,
   "lessons": [
     {
       "id": "lesson-uuid-001",
@@ -189,8 +222,6 @@ All top-level fields from the courses list are returned, plus:
 
 ## POST /api/courses/:courseId/enroll
 
-<span style={{display:"inline-block", background:"#3b82f6", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>POST</span>
-
 Enrolls you in the specified course. No request body is required.
 
 ### Path parameters
@@ -202,15 +233,15 @@ Enrolls you in the specified course. No request body is required.
 ### Response fields
 
 <ResponseField name="success" type="boolean">
-  `true` when the enrollment was created.
+  `true` when a new enrollment was created. Omitted when you were already enrolled.
 </ResponseField>
 
 <ResponseField name="enrolled" type="boolean">
-  `true` if you were already enrolled before this request. When returned, `success` is omitted and the response is `{ "message": "Already enrolled", "enrolled": true }`.
+  Returned only when you were already enrolled. Always `true` in that case, alongside a `message` field.
 </ResponseField>
 
 <ResponseField name="enrollment" type="object">
-  The newly created enrollment record, returned only when a new enrollment was made.
+  The newly created enrollment record. Only present when a new enrollment was made.
 
   <Expandable title="Enrollment object fields">
     <ResponseField name="id" type="string">UUID of the enrollment record.</ResponseField>
@@ -261,8 +292,6 @@ Enrolls you in the specified course. No request body is required.
 ---
 
 ## DELETE /api/courses/:courseId/enroll
-
-<span style={{display:"inline-block", background:"#ef4444", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>DELETE</span>
 
 Removes your enrollment from a course. Any lesson progress you have recorded is **not** deleted.
 

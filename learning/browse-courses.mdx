@@ -1,5 +1,5 @@
 ---
-title: "Browse and Discover Courses on UpForge"
+title: "Browse and Discover Courses in the UpForge Catalog"
 sidebarTitle: "Browse Courses"
 description: "Explore the UpForge course catalog. Filter, search, and find project-based courses that match your skill level and learning goals."
 ---
@@ -8,7 +8,7 @@ The UpForge course catalog is your gateway to every learning path on the platfor
 
 ## Navigating the Catalog
 
-Open the course catalog by clicking **Courses** in the left sidebar. UpForge loads every available course and displays them in a responsive grid — four columns on large screens, two on tablets, and a single column on mobile.
+Open the course catalog by clicking **Courses** in the left sidebar. UpForge loads every available course and displays them in a responsive grid — up to four columns on extra-large screens, three columns on large screens, two on tablets, and a single column on mobile.
 
 The catalog shows all courses immediately when the page loads. As you type in the search bar, the grid filters in real time — no page reload needed.
 
@@ -29,18 +29,45 @@ Every card in the catalog gives you enough detail to decide whether a course is 
 | **Description** | A short summary of what the course covers |
 | **Duration** | Total estimated watch time in minutes |
 | **XP value** | The total experience points you earn for completing the course |
-| **Total lessons** | How many video lessons make up the course |
 | **Progress bar** | Appears only on courses you are enrolled in; shows the percentage of lessons you have completed |
 
 ## Course Difficulty Levels
 
-Every course carries a difficulty label — **Beginner**, **Intermediate**, or **Advanced** — so you can match a course to your current skill level. Courses default to **Beginner** unless otherwise specified, making the catalog a safe starting point even if you are brand new to a topic.
+Every course carries a difficulty label — **Beginner**, **Intermediate**, or **Advanced** — so you can match a course to your current skill level. Courses default to **Beginner** unless otherwise specified, making the catalog a safe starting point even if you are brand new to a topic. The difficulty label is shown on the course detail page when you open a course.
 
 ## Finding the Right Course
 
 Before you enroll, read the course description carefully. It summarises the skills the course targets, the projects you will build, and what you should already know. If the description mentions tools or concepts you are not yet familiar with, look for a prerequisite course in the catalog first.
 
 You can also look at the XP value as a rough signal of course depth — a higher point value typically reflects more lessons and broader coverage.
+
+## Fetching the Course List via API
+
+The course catalog is powered by a public API endpoint. If you are building integrations or want to retrieve the full list of courses programmatically, send an authenticated GET request:
+
+```
+GET /api/courses
+```
+
+The response is a JSON array. Each object includes the fields that power the catalog cards:
+
+```json
+[
+  {
+    "id": "course-uuid",
+    "title": "Course Title",
+    "description": "Short summary of the course",
+    "thumbnail": "https://...",
+    "duration": 120,
+    "points": 100,
+    "totalLessons": 10,
+    "enrolled": false,
+    "progress": 0
+  }
+]
+```
+
+You must be signed in to call this endpoint. See [API Reference — Courses](/api-reference/endpoints/courses) for full details.
 
 <Tip>
   All UpForge courses are sourced from curated YouTube playlists. Every lesson is a hand-picked YouTube video embedded directly in the player, so you always get high-quality, up-to-date content without leaving the platform.

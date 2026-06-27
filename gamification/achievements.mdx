@@ -12,22 +12,22 @@ UpForge currently has three built-in achievements:
 
 | Achievement | Description | Criteria | Bonus XP |
 |---|---|---|---|
-| 📚 Lesson Explorer | Complete 5 lessons | `lessons_completed` ≥ 5 | 100 XP |
-| 🎓 Course Master | Complete your first course | `courses_completed` ≥ 1 | 200 XP |
-| 🔥 Streak Starter | Maintain a 7-day streak | `streak_days` ≥ 7 | 150 XP |
+| 📚 Lesson Explorer | Complete 5 lessons | Complete 5 lessons across any courses | 100 XP |
+| 🎓 Course Master | Complete your first course | Finish every lesson in any single course | 200 XP |
+| 🔥 Streak Starter | Maintain a 7-day streak | Complete at least one lesson on 7 consecutive days | 150 XP |
 
 <CardGroup cols={3}>
-  <Card title="📚 Lesson Explorer" icon="book-open">
+  <Card title="📚 Lesson Explorer" icon="book-open" href="/gamification/achievements">
     Complete **5 lessons** across any courses. A great early milestone that rewards you for getting started.
 
     **Bonus: 100 XP**
   </Card>
-  <Card title="🎓 Course Master" icon="graduation-cap">
+  <Card title="🎓 Course Master" icon="graduation-cap" href="/gamification/achievements">
     Finish **every lesson** in any single course to mark it as complete. The highest-value achievement currently available.
 
     **Bonus: 200 XP**
   </Card>
-  <Card title="🔥 Streak Starter" icon="fire">
+  <Card title="🔥 Streak Starter" icon="fire" href="/gamification/achievements">
     Log learning activity on **7 consecutive days**. Proves you've built a real daily habit.
 
     **Bonus: 150 XP**
@@ -40,7 +40,7 @@ UpForge currently has three built-in achievements:
 
 UpForge checks your progress automatically after **every lesson completion**. You don't need to visit the Achievements page or take any manual action — if you've met the criteria for an achievement, it's awarded immediately.
 
-Here's what happens behind the scenes when you complete a lesson:
+Here's what happens when you complete a lesson:
 
 <Steps>
   <Step title="Lesson is marked complete">
@@ -79,16 +79,16 @@ Earned achievements appear in full colour with the date you unlocked them. Locke
 At the top of the Achievements page, four summary cards give you an instant snapshot of where you stand:
 
 <CardGroup cols={4}>
-  <Card title="Earned" icon="award">
+  <Card title="Earned" icon="award" href="/gamification/achievements">
     Total number of achievements you've unlocked.
   </Card>
-  <Card title="Locked" icon="lock">
+  <Card title="Locked" icon="lock" href="/gamification/achievements">
     Achievements you haven't yet qualified for.
   </Card>
-  <Card title="Completion %" icon="circle-check">
+  <Card title="Completion %" icon="circle-check" href="/gamification/achievements">
     Your overall achievement completion rate as a percentage.
   </Card>
-  <Card title="Total XP from Achievements" icon="star">
+  <Card title="Total XP from Achievements" icon="star" href="/gamification/achievements">
     The sum of all bonus XP you've collected from achievements so far.
   </Card>
 </CardGroup>

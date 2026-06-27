@@ -1,7 +1,7 @@
 ---
 title: "Achievements API: List All Badges and Earned Status"
 sidebarTitle: "Achievements"
-description: "GET /api/achievements returns all platform achievements with your earned status, earned date, and point value. Requires authentication."
+description: "GET /api/achievements returns every platform achievement with your earned status, unlock timestamp, and bonus XP value. Authentication required."
 ---
 
 The Achievements API gives you a complete picture of every badge available on UpForge and tells you which ones you've already unlocked. Achievements are awarded automatically when you complete lessons — you never need to claim them manually.
@@ -9,8 +9,6 @@ The Achievements API gives you a complete picture of every badge available on Up
 ---
 
 ## GET /api/achievements
-
-<span style={{display:"inline-block", background:"#22c55e", color:"#fff", borderRadius:"4px", padding:"2px 10px", fontWeight:700, fontSize:"13px", marginBottom:"12px"}}>GET</span>
 
 Returns all achievements defined on the platform, each annotated with your personal earned status and the timestamp you unlocked it (if applicable).
 

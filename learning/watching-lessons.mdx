@@ -11,10 +11,10 @@ The UpForge course player is where your learning happens. Each course page combi
 The course player uses a two-column layout:
 
 <CardGroup cols={2}>
-  <Card title="Video Area" icon="play">
+  <Card title="Video Area" icon="play" href="/learning/watching-lessons">
     The left two-thirds of the screen (on desktop). Displays the currently selected lesson video, the lesson title, and the **Mark as Complete** button. On mobile, this stacks above the sidebar.
   </Card>
-  <Card title="Curriculum Sidebar" icon="list">
+  <Card title="Curriculum Sidebar" icon="list" href="/learning/tracking-progress">
     The right third of the screen. Lists every lesson in the course in order. Shows your progress bar (enrolled learners only), completion status for each lesson, and the currently playing lesson highlighted in violet.
   </Card>
 </CardGroup>
@@ -56,6 +56,16 @@ XP per lesson = floor(course total points ÷ total lessons in course)
 ```
 
 For example, a 100-XP course with 10 lessons awards **10 XP** per completed lesson. You can see the course's total XP value on the course header banner before you enroll.
+
+## Course Detail API
+
+When you open a course page, UpForge fetches the full course detail — including all lessons and your completion status for each one — via this authenticated endpoint:
+
+```
+GET /api/courses/:courseId
+```
+
+The response includes the course fields (title, description, duration, points, difficulty) as well as a `lessons` array with each lesson's completion status and a top-level `enrolled` flag indicating whether you are currently enrolled. See [API Reference — Courses](/api-reference/endpoints/courses) for the full response schema.
 
 <Tip>
   UpForge automatically loads the **first uncompleted lesson** when you open a course you are already enrolled in. So every time you return, you land right where you left off — no need to scroll through the sidebar to find your place.
